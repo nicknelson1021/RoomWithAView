@@ -24,8 +24,8 @@
             android:id="@+id/edit_text"
             android:hint="@string/et_hint"
             android:layout_weight="1"
-            android:paddingLeft="5dp"
-            android:paddingStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
 
