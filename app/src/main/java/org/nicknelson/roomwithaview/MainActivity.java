@@ -1,17 +1,23 @@
 package org.nicknelson.roomwithaview;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     EditText editText;
     Button button;
+    private WordViewModel mWordViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,18 +37,41 @@ public class MainActivity extends AppCompatActivity {
         editText = findViewById(R.id.edit_text);
         button = findViewById(R.id.add_button);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // button was clicked
-            }
-        });
-
         final WordListAdapter adapter = new WordListAdapter(this);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        mWordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
+        mWordViewModel.getAllWords().observe(this, new Observer<List<WordEntity>>() {
+            @Override
+            public void onChanged(@Nullable final List<WordEntity> words) {
+                // Update the cached copy of the words in the adapter.
+                adapter.setWords(words);
+            }
+        });
+
+    }
+
+    public void buttonClick(View view) {
+
+        if (TextUtils.isEmpty(editText.getText())) {
+            Toast.makeText(
+                    getApplicationContext(),
+                    R.string.toast,
+                    Toast.LENGTH_LONG).show();
+        } else {
+
+            WordEntity word = new WordEntity();
+            String wordStr = editText.getText().toString();
+            editText.setText("");
+
+            word.setWord(wordStr);
+            word.setCreateDate(new Date());
+
+            mWordViewModel.insert(word);
+
+        }
     }
 
     public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
@@ -91,5 +121,4 @@ public class MainActivity extends AppCompatActivity {
             else return 0;
         }
     }
-
 }
