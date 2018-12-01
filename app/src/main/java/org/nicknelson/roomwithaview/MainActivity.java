@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO: Wire up the "add 500 words" option
     // TODO: Add paging to the app
+    // TODO: Keyboard enter button should add word as well as pressing "add" button
 
     RecyclerView recyclerView;
     EditText editText;
