@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RoomWithAView</string>
+    <string name="add_button">ADD</string>
+    <string name="et_hint">Add a word...</string>
 </resources>
