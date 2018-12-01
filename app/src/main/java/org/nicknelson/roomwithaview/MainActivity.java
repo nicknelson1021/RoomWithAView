@@ -10,6 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,15 +25,22 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    // TODO: Wire up the "add 500 words" option
+    // TODO: Add paging to the app
+
     RecyclerView recyclerView;
     EditText editText;
     Button button;
     private WordViewModel mWordViewModel;
+    int wordCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // initialize variables
+        wordCount = 0;
 
         // initialize widgets
         recyclerView = findViewById(R.id.recycler_view);
@@ -48,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(@Nullable final List<WordEntity> words) {
                 // Update the cached copy of the words in the adapter.
                 adapter.setWords(words);
+                wordCount = words.size();
             }
         });
 
@@ -72,6 +83,42 @@ public class MainActivity extends AppCompatActivity {
             mWordViewModel.insert(word);
 
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // override options menu and inflate layout
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home_overflow, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        if (wordCount > 0) {
+            menu.findItem(R.id.home_clear).setVisible(true);
+        } else {
+            menu.findItem(R.id.home_clear).setVisible(false);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.home_clear:
+                mWordViewModel.deleteAll();
+                break;
+            case R.id.home_add:
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
