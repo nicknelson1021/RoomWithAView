@@ -3,6 +3,6 @@
     <string name="add_button">ADD</string>
     <string name="et_hint">Add a word…</string>
     <string name="toast">Nothing was entered…</string>
-    <string name="clear_db">Clear database</string>
-    <string name="add_words">Add 500 words</string>
+    <string name="clear_db">Clear Database</string>
+    <string name="add_words">Populate Database</string>
 </resources>

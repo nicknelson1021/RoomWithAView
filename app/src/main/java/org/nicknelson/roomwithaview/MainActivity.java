@@ -25,7 +25,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    // TODO: Wire up the "add 500 words" option
     // TODO: Add paging to the app
     // TODO: Keyboard enter button should add word as well as pressing "add" button
 
@@ -87,13 +86,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addWords(int amount) {
-        WordEntity word = new WordEntity();
+        WordEntity word;
 
         int i = 1;
         String wordStr;
 
         do {
+
             wordStr = String.format("%05d", i);
+            word = new WordEntity();
             word.setWord(wordStr);
             word.setCreateDate(new Date());
             mWordViewModel.insert(word);
