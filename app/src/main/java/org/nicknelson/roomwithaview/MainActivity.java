@@ -86,6 +86,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void addWords(int amount) {
+        WordEntity word = new WordEntity();
+
+        int i = 1;
+        String wordStr;
+
+        do {
+            wordStr = String.format("%05d", i);
+            word.setWord(wordStr);
+            word.setCreateDate(new Date());
+            mWordViewModel.insert(word);
+            i++;
+        } while (i <= amount);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // override options menu and inflate layout
@@ -115,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 mWordViewModel.deleteAll();
                 break;
             case R.id.home_add:
-
+                addWords(500);
                 break;
         }
 
