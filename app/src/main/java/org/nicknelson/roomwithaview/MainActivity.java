@@ -6,9 +6,11 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,16 +25,19 @@ import android.widget.Toast;
 import java.util.Date;
 import java.util.List;
 
+import static android.graphics.drawable.ClipDrawable.HORIZONTAL;
+
 public class MainActivity extends AppCompatActivity {
 
     // TODO: Add paging to the app
-    // TODO: Keyboard enter button should add word as well as pressing "add" button
+    // TODO: Add swipe-to-delete
 
     RecyclerView recyclerView;
     EditText editText;
     Button button;
     private WordViewModel mWordViewModel;
     int wordCount;
+    DividerItemDecoration itemDecor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +52,15 @@ public class MainActivity extends AppCompatActivity {
         editText = findViewById(R.id.edit_text);
         button = findViewById(R.id.add_button);
 
+        // instantiate RecyclerView divider
+        itemDecor = new DividerItemDecoration(this, HORIZONTAL);
+
         final WordListAdapter adapter = new WordListAdapter(this);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // add list divider
+        //recyclerView.addItemDecoration(itemDecor);
 
         mWordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
         mWordViewModel.getAllWords().observe(this, new Observer<List<WordEntity>>() {
@@ -59,6 +69,19 @@ public class MainActivity extends AppCompatActivity {
                 // Update the cached copy of the words in the adapter.
                 adapter.setWords(words);
                 wordCount = words.size();
+            }
+        });
+
+        // add word when enter is pressed on keyboard
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction()!=KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        buttonClick(null);
+                        return true;
+                    } }
+                return false;
             }
         });
 

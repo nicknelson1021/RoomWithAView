@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@android:color/darker_gray"
     tools:context=".MainActivity">
 
     <android.support.v7.widget.RecyclerView
@@ -15,8 +16,15 @@
         android:background="@android:color/darker_gray"
         tools:listitem="@layout/recyclerview_item" />
 
+    <View
+        android:background="?android:attr/listDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        />
+
     <LinearLayout
         android:orientation="horizontal"
+        android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
