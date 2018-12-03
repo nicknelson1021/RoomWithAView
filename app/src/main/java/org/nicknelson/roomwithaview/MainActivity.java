@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
         // add list divider
         //recyclerView.addItemDecoration(itemDecor);
 
@@ -115,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         String wordStr;
 
         do {
-
             wordStr = String.format("%05d", i);
             word = new WordEntity();
             word.setWord(wordStr);
@@ -164,23 +164,32 @@ public class MainActivity extends AppCompatActivity {
     public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
 
         class WordViewHolder extends RecyclerView.ViewHolder {
+
             private final TextView wordItemView;
-            private final View mainView;
 
             private WordViewHolder(View itemView) {
                 super(itemView);
-                mainView = itemView;
                 wordItemView = itemView.findViewById(R.id.textView);
+
                 itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
-
                         final WordEntity thisWord = mWords.get(getAdapterPosition());
                         Toast.makeText(MainActivity.this,
                                 "You long-clicked: " + thisWord.getWord(),
-                                Toast.LENGTH_LONG);
+                                Toast.LENGTH_LONG).show();
 
                         return false;
+                    }
+                });
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final WordEntity thisWord = mWords.get(getAdapterPosition());
+                        Toast.makeText(MainActivity.this,
+                                "You clicked: " + thisWord.getWord(),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -200,18 +209,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(WordViewHolder holder, int position) {
 
-            final WordEntity current = mWords.get(position);
-
-            holder.mainView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(MainActivity.this,
-                            "You clicked: " + current.getWord(),
-                            Toast.LENGTH_LONG);
-                }
-            });
-
             if (mWords != null) {
+                final WordEntity current = mWords.get(position);
                 holder.wordItemView.setText(current.getWord());
             } else {
                 // Covers the case of data not being ready yet.
