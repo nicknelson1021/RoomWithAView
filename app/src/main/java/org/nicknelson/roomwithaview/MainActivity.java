@@ -165,10 +165,24 @@ public class MainActivity extends AppCompatActivity {
 
         class WordViewHolder extends RecyclerView.ViewHolder {
             private final TextView wordItemView;
+            private final View mainView;
 
             private WordViewHolder(View itemView) {
                 super(itemView);
+                mainView = itemView;
                 wordItemView = itemView.findViewById(R.id.textView);
+                itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        final WordEntity thisWord = mWords.get(getAdapterPosition());
+                        Toast.makeText(MainActivity.this,
+                                "You long-clicked: " + thisWord.getWord(),
+                                Toast.LENGTH_LONG);
+
+                        return false;
+                    }
+                });
             }
         }
 
@@ -185,8 +199,19 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(WordViewHolder holder, int position) {
+
+            final WordEntity current = mWords.get(position);
+
+            holder.mainView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(MainActivity.this,
+                            "You clicked: " + current.getWord(),
+                            Toast.LENGTH_LONG);
+                }
+            });
+
             if (mWords != null) {
-                WordEntity current = mWords.get(position);
                 holder.wordItemView.setText(current.getWord());
             } else {
                 // Covers the case of data not being ready yet.
