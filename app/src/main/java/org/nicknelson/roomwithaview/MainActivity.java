@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this,
                                 "You long-clicked: " + thisWord.getWord(),
                                 Toast.LENGTH_LONG).show();
-
+                        // returning false here will alow onClickListener to trigger as well
                         return true;
                     }
                 });
