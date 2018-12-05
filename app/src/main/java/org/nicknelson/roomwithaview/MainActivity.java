@@ -197,9 +197,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         final WordEntity thisWord = mWords.get(getAdapterPosition());
-                        Toast.makeText(MainActivity.this,
-                                "You clicked: " + thisWord.getWord(),
-                                Toast.LENGTH_LONG).show();
+
+                        if (thisWord.getIsSelected()) {
+                            thisWord.setIsSelected(false);
+                        } else {
+                            thisWord.setIsSelected(true);
+                        }
+                        mWordViewModel.update(thisWord);
                     }
                 });
             }
@@ -221,10 +225,13 @@ public class MainActivity extends AppCompatActivity {
 
             if (mWords != null) {
                 final WordEntity current = mWords.get(position);
+
                 holder.wordItemView.setText(current.getWord());
+                holder.checkBox.setChecked(current.getIsSelected());
             } else {
                 // Covers the case of data not being ready yet.
                 holder.wordItemView.setText("No Word");
+                holder.checkBox.setChecked(false);
             }
         }
 

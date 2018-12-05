@@ -49,6 +49,7 @@ public class WordEntity {
         this.mCreateDate = createDate;
     }
 
+    @NonNull
     boolean getIsSelected() { return mIsSelected; }
 
     void setIsSelected(@NonNull boolean isSelected) { this.mIsSelected = isSelected; }
