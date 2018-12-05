@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             wordStr = String.format("%05d", i);
             word = new WordEntity();
             word.setWord(wordStr);
+            word.setIsSelected(false);
             word.setCreateDate(new Date());
             mWordViewModel.insert(word);
             i++;
