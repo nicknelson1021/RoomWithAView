@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
             editText.setText("");
 
             word.setWord(wordStr);
+            word.setIsSelected(false);
             word.setCreateDate(new Date());
 
             mWordViewModel.insert(word);

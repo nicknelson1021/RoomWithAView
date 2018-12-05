@@ -18,32 +18,39 @@ public class WordEntity {
     private String mWord;
 
     @NonNull
-    public Date mCreateDate;
+    private Date mCreateDate;
 
-    public int getWordId() {
+    @NonNull
+    private boolean mIsSelected;
+
+    int getWordId() {
         return mWordId;
     }
 
-    public void setWordId(int wordId) {
+    void setWordId(int wordId) {
         this.mWordId = wordId;
     }
 
     @NonNull
-    public String getWord() {
+    String getWord() {
         return mWord;
     }
 
-    public void setWord(@NonNull String word) {
+    void setWord(@NonNull String word) {
         this.mWord = word;
     }
 
     @NonNull
-    public Date getCreateDate() {
+    Date getCreateDate() {
         return mCreateDate;
     }
 
-    public void setCreateDate(@NonNull Date createDate) {
+    void setCreateDate(@NonNull Date createDate) {
         this.mCreateDate = createDate;
     }
+
+    boolean getIsSelected() { return mIsSelected; }
+
+    void setIsSelected(@NonNull boolean isSelected) { this.mIsSelected = isSelected; }
 
 }

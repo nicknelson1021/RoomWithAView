@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Date;
 
-@Database(entities = {WordEntity.class}, version = 1)
+@Database(entities = {WordEntity.class}, version = 2)
 public abstract class RoomDatabase extends android.arch.persistence.room.RoomDatabase {
 
     public abstract WordDao wordDao();
@@ -34,6 +34,7 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             RoomDatabase.class, "app_database")
                             .addCallback(sRoomDatabaseCallback)
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
@@ -60,6 +61,7 @@ public abstract class RoomDatabase extends android.arch.persistence.room.RoomDat
             do {
                 wordStr = String.format("%05d", i);
                 word.setWord(wordStr);
+                word.setIsSelected(false);
                 word.setCreateDate(new Date());
                 mDao.insert(word);
                 i++;
