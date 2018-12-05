@@ -18,7 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     // TODO: Add paging to the app
     // TODO: Add swipe-to-delete
+    // TODO: Remove checkbox transparent background and remove row selector so only cb is animated
 
     RecyclerView recyclerView;
     EditText editText;
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
         // add list divider
         //recyclerView.addItemDecoration(itemDecor);
 
@@ -101,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
             editText.setText("");
 
             word.setWord(wordStr);
+            word.setIsSelected(false);
             word.setCreateDate(new Date());
 
             mWordViewModel.insert(word);
@@ -115,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         String wordStr;
 
         do {
-
             wordStr = String.format("%05d", i);
             word = new WordEntity();
             word.setWord(wordStr);
@@ -164,11 +168,44 @@ public class MainActivity extends AppCompatActivity {
     public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
 
         class WordViewHolder extends RecyclerView.ViewHolder {
+
             private final TextView wordItemView;
+            private final CheckBox checkBox;
+            private final LinearLayout viewForeground;
 
             private WordViewHolder(View itemView) {
                 super(itemView);
+                viewForeground = itemView.findViewById(R.id.viewForeground);
                 wordItemView = itemView.findViewById(R.id.textView);
+                checkBox = itemView.findViewById(R.id.checkBox);
+
+                checkBox.setClickable(false);
+
+                viewForeground.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        final WordEntity thisWord = mWords.get(getAdapterPosition());
+                        Toast.makeText(MainActivity.this,
+                                "You long-clicked: " + thisWord.getWord(),
+                                Toast.LENGTH_LONG).show();
+                        // returning false here will alow onClickListener to trigger as well
+                        return true;
+                    }
+                });
+
+                viewForeground.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final WordEntity thisWord = mWords.get(getAdapterPosition());
+
+                        if (thisWord.getIsSelected()) {
+                            thisWord.setIsSelected(false);
+                        } else {
+                            thisWord.setIsSelected(true);
+                        }
+                        mWordViewModel.update(thisWord);
+                    }
+                });
             }
         }
 
@@ -185,12 +222,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(WordViewHolder holder, int position) {
+
             if (mWords != null) {
-                WordEntity current = mWords.get(position);
+                final WordEntity current = mWords.get(position);
+
                 holder.wordItemView.setText(current.getWord());
+                holder.checkBox.setChecked(current.getIsSelected());
             } else {
                 // Covers the case of data not being ready yet.
                 holder.wordItemView.setText("No Word");
+                holder.checkBox.setChecked(false);
             }
         }
 
