@@ -18,7 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -166,12 +168,19 @@ public class MainActivity extends AppCompatActivity {
         class WordViewHolder extends RecyclerView.ViewHolder {
 
             private final TextView wordItemView;
+            private final CheckBox checkBox;
+            private final LinearLayout rowView;
 
             private WordViewHolder(View itemView) {
                 super(itemView);
+                rowView = itemView.findViewById(R.id.rowView);
                 wordItemView = itemView.findViewById(R.id.textView);
+                checkBox = itemView.findViewById(R.id.checkBox);
 
-                itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                checkBox.setClickable(false);
+                checkBox.setAnimation(null);
+
+                rowView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
                         final WordEntity thisWord = mWords.get(getAdapterPosition());
@@ -179,11 +188,11 @@ public class MainActivity extends AppCompatActivity {
                                 "You long-clicked: " + thisWord.getWord(),
                                 Toast.LENGTH_LONG).show();
 
-                        return false;
+                        return true;
                     }
                 });
 
-                itemView.setOnClickListener(new View.OnClickListener() {
+                rowView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         final WordEntity thisWord = mWords.get(getAdapterPosition());
