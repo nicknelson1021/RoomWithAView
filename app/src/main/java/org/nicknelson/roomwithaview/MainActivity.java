@@ -169,18 +169,17 @@ public class MainActivity extends AppCompatActivity {
 
             private final TextView wordItemView;
             private final CheckBox checkBox;
-            private final LinearLayout rowView;
+            private final LinearLayout viewForeground;
 
             private WordViewHolder(View itemView) {
                 super(itemView);
-                rowView = itemView.findViewById(R.id.rowView);
+                viewForeground = itemView.findViewById(R.id.viewForeground);
                 wordItemView = itemView.findViewById(R.id.textView);
                 checkBox = itemView.findViewById(R.id.checkBox);
 
                 checkBox.setClickable(false);
-                checkBox.setAnimation(null);
 
-                rowView.setOnLongClickListener(new View.OnLongClickListener() {
+                viewForeground.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
                         final WordEntity thisWord = mWords.get(getAdapterPosition());
@@ -192,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                rowView.setOnClickListener(new View.OnClickListener() {
+                viewForeground.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         final WordEntity thisWord = mWords.get(getAdapterPosition());
