@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity
         implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     // TODO: Add paging to the app
-    // TODO: Add swipe-to-delete
     // TODO: Remove checkbox transparent background and remove row selector so only cb is animated
 
     RecyclerView recyclerView;
