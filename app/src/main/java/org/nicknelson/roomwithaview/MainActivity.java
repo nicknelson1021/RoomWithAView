@@ -3,12 +3,16 @@ package org.nicknelson.roomwithaview;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,13 +27,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.Date;
 import java.util.List;
 
 import static android.graphics.drawable.ClipDrawable.HORIZONTAL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     // TODO: Add paging to the app
     // TODO: Add swipe-to-delete
@@ -41,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private WordViewModel mWordViewModel;
     int wordCount;
     DividerItemDecoration itemDecor;
+    WordListAdapter adapter;
+    LinearLayout mainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,17 +60,24 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
         editText = findViewById(R.id.edit_text);
         button = findViewById(R.id.add_button);
+        mainLayout = findViewById(R.id.main_layout);
 
         // instantiate RecyclerView divider
         itemDecor = new DividerItemDecoration(this, HORIZONTAL);
 
-        final WordListAdapter adapter = new WordListAdapter(this);
+        adapter = new WordListAdapter(this);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         // add list divider
         //recyclerView.addItemDecoration(itemDecor);
+
+        // adding swipe-to-delete functionality
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
+                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT,
+                        this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         mWordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
         mWordViewModel.getAllWords().observe(this, new Observer<List<WordEntity>>() {
@@ -166,13 +179,53 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        final WordEntity word = adapter.mWords.get(position);
+        mWordViewModel.delete(word);
+
+        Snackbar snackbar = Snackbar
+                .make(mainLayout, "Word deleted!", Snackbar.LENGTH_LONG);
+
+        // insert deleted item back into the database when user clicks undo
+        snackbar.setAction("UNDO", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mWordViewModel.insert(word);
+            }
+        });
+
+        // add padding to bottom of layout when snackbar is displayed
+        // prevents snackbar from covering the edit text
+        snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            @Override
+            public void onShown(Snackbar transientBottomBar) {
+                int height = transientBottomBar.getView().getHeight();
+                mainLayout.setPadding(0, 0, 0, height);
+
+                super.onShown(transientBottomBar);
+            }
+
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                mainLayout.setPadding(0, 0, 0, 0);
+
+                super.onDismissed(transientBottomBar, event);
+            }
+        });
+
+        snackbar.setActionTextColor(Color.YELLOW);
+        snackbar.show();
+
+    }
+
     public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
 
         class WordViewHolder extends RecyclerView.ViewHolder {
 
             private final TextView wordItemView;
             private final CheckBox checkBox;
-            private final LinearLayout viewForeground;
+            public LinearLayout viewForeground;
 
             private WordViewHolder(View itemView) {
                 super(itemView);
