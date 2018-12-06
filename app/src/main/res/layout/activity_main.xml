@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layoutAnimation="@anim/layout_animation_from_bottom"
         android:background="@android:color/darker_gray"
         tools:listitem="@layout/recyclerview_item" />
 
