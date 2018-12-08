@@ -21,6 +21,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -46,6 +49,14 @@ public class MainActivity extends AppCompatActivity
     DividerItemDecoration itemDecor;
     WordListAdapter adapter;
     LinearLayout mainLayout;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+        runLayoutAnimation(recyclerView);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +112,16 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    private void runLayoutAnimation(final RecyclerView recyclerView) {
+        final Context context = recyclerView.getContext();
+        final LayoutAnimationController controller =
+                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom);
+
+        recyclerView.setLayoutAnimation(controller);
+        recyclerView.getAdapter().notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
     }
 
     public void buttonClick(View view) {
@@ -275,6 +296,16 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onBindViewHolder(WordViewHolder holder, int position) {
+
+            /*
+            boolean animate = true;
+            // If the bound view wasn't previously displayed on screen, it's animated
+            if (animate) {
+                Animation animation = AnimationUtils.loadAnimation(MainActivity.this,
+                        android.R.anim.slide_in_left);
+                holder.itemView.startAnimation(animation);
+                animate = false;
+            }*/
 
             if (mWords != null) {
                 final WordEntity current = mWords.get(position);

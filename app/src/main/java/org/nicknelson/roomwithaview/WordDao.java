@@ -25,7 +25,7 @@ public interface WordDao {
     @Query("DELETE FROM WordEntity")
     void deleteAll();
 
-    @Query("SELECT * from WordEntity ORDER BY mIsSelected ASC, mWord ASC")
+    @Query("SELECT * from WordEntity ORDER BY mWord ASC")
     LiveData<List<WordEntity>> getAllWords();
 
 }
